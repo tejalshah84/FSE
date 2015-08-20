@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title> FSE Chat Room </title>
+		<link rel="stylesheet" href="styles.css"/>
+	</head>
+
+	<body>
+		<main>
+
+			<div class="loginBlock">	
+				<div class="logo">FSE Chat Room</div>
+
+				<form class="loginForm" id="login" action="/login" method="POST">
+
+					<div class="loginFields">
+						<label class="loginFieldLabel">Username:</label>
+						<input class="loginFieldInput" type="text" name="userName" maxlength="20"/>
+					</div>
+					<div class="loginFields">
+						<label class="loginFieldLabel">Password:</label>
+						<input class="loginFieldInput" type="text" name="password" maxlength="20"/>
+					</div>
+					<div class="loginButtonSection">
+						<input class="loginButton" type="submit" value="Login"/>
+						</br>
+						<a href="/createUser.html">New User?</a>
+					</div>	
+					
+				</form>
+
+			</div>
+
+		</main>
+	</body>
+
+</html>
