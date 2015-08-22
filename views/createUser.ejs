@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title> FSE Chat Room </title>
+		<link rel="stylesheet" href="styles.css"/>
+	</head>
+
+	<body>
+
+		<main>
+
+			<p class="pageMessage"><%= pageMessage %></p>
+
+			<div class="createUserBlock">	
+				<div class="logo">FSE Chat Room</div>
+
+				<form class="createUserForm" id="createUser" action='/createUser' method="POST">
+
+					<div class="createUserFields">
+						<label class="createUserFieldsLabel">First Name:</label>
+						<input class="createUserFieldsInput" type="text" name="firstName" maxlength="20"/>
+					</div>
+					<div class="createUserFields">
+						<label class="createUserFieldsLabel">Last Name:</label>
+						<input class="createUserFieldsInput" type="text" name="lastName" maxlength="20"/>
+					</div>
+					<div class="createUserFields">
+						<label class="createUserFieldsLabel">Username:</label>
+						<input class="createUserFieldsInput" type="text" name="userName" maxlength="20"/>
+					</div>
+					<div class="createUserFields">
+						<label class="createUserFieldsLabel">Password:</label>
+						<input class="createUserFieldsInput" type="text" name="password" maxlength="20"/>
+					</div>
+					<div class="createUserButtonSection">
+						<input class="createUserButton" type="submit" value="Create User"/>
+					</div>
+
+				</form>
+			</div>
+
+		</main>
+
+	</body>
+
+</html>
