@@ -3,6 +3,7 @@ var express = require('express'),
     http = require('http'), 
     path = require('path'),
     _ = require('underscore'),
+    moment = require('moment'),
     sqlite3 = require('sqlite3').verbose();
 
 //Create express instance
@@ -31,7 +32,7 @@ var db = new sqlite3.Database('fsechat.db');
 db.serialize(function (){
 
     //db.run("DROP Table if EXISTS user_profile", function(err){});
-    //db.run("DROP Table if EXISTS chat_history", function(err){});
+    db.run("DROP Table if EXISTS chat_history", function(err){});
 
     // Create Tables if they don't exist
     db.run("CREATE Table if NOT EXISTS user_profile (userid INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(25) UNIQUE NOT NULL, password VARCHAR(25) NOT NULL, firstname VARCHAR(25), lastname VARCHAR(25))", function (err){
@@ -101,13 +102,16 @@ app.post('/login', function (request, response){
             response.render('login', {pageMessage: "This Username does not exist, please use new user flow to create ID"});
             console.log("User does not exist");
         }
-        else if (row.username!==request.body.userName || row.password!==request.body.password){
-            response.render('login', {pageMessage: "Incorrect Username or Password, please try again"});
-            console.log("Incorrect credentials");
-        }
         else {
-         console.log(row);  
-         response.redirect('/chatRoom');
+
+            if (row.password===request.body.password){
+                console.log(row);  
+                response.redirect('/chatRoom');
+            }
+            else {
+             response.render('login', {pageMessage: "Incorrect Username or Password, please try again"});
+             console.log("Incorrect credentials");
+            }  
         }   
         
     });
@@ -174,9 +178,9 @@ app.get('/chatRoom', function (request, response){
                 console.log('loading chat_history');
                 rows.forEach(function(row){
                     postHist = {};
-                    postHist.userName= row.username,
-                    postHist.timeStamp= row.timestamp,
-                    postHist.message= row.chatmessage
+                    postHist.userName= row.username;
+                    postHist.timeStamp= moment(row.timestamp).format("MM/DD/YYYY h:mm A");
+                    postHist.message= row.chatmessage;
 
                 
                     console.log(postHist);
