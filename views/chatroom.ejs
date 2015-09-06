@@ -11,27 +11,34 @@
         <script src="chat.js"></script>
     </head>
     <body>
-            <header>
-                <span class="chatRoomHeader"> FSE Chat Room </span>
-                <a class="logout" href="/login.html"> Logout</a>
-            </header>
-
-            <main>
-                    <div class="oldpostDisplayContainer" style="width:400px;length:600px;">
+        <div class="mainContainer">
+            <div class="contentSection">
+                <div class="headerSection">
+                    <div class="pull-left"> FSE Chat Room </div>
+                    <div class="pull-right"><a class="logout" href="/"> Logout</a></div>
+                    <div class="clear-float"></div>
+                </div>
+                <p class="nickname"><%= userName %></p>
+                <div id="chatMessageArea" class="chatMessageArea">
                     <% oldposts.forEach(function(oldpost){ %>
-                        <div class="oldpost">
-                            <p class="oldpostUser"><%=oldpost.userName%></p>
-                            <p class="oldpostTime"><%=oldpost.timeStamp %></p>
-                            <p class="oldpostMessage"><%=oldpost.message%></p>
-                        </div>
+                    <div class="oldpost">
+                        <p class="oldpostUser pull-left"><%=oldpost.userName%></p>
+                        <p class="oldpostTime pull-right"><%=oldpost.timeStamp %></p>
+                        <div class="clear-float"></div>
+                        <p class="oldpostMessage"><%=oldpost.message%></p>
+                    </div>
                     <% }) %>
+                </div>
+                <div class="postMessageSection">
+                    <div class="postMessageArea">
+                        <textarea id="postMessage" class="postMessage"></textarea>
                     </div>
-
-                    <div class="postInputSection">
-                        <textarea class="postMessage" rows=5></textarea>
-                        <button class="postButton">Post</button>
+                    <div class="sendPostSection">
+                        <button id="sendMessageButton" class="postButton">Send</button>
                     </div>
-
-            </main>
+                </div>
+                
+            </div>
+        </div>
     </body>
 </html>

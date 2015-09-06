@@ -85,7 +85,7 @@ var server = http.createServer(app).listen(app.get('port'), function(){
 
 //Handle webpage routing
 app.get('/', function (request, response){
-    response.redirect('login.html');
+    response.render('login', {pageMessage: ' '});
 });
 
 app.post('/login', function (request, response){
@@ -106,7 +106,7 @@ app.post('/login', function (request, response){
 
             if (row.password===request.body.password){
                 console.log(row);  
-                response.redirect('/chatRoom');
+                response.redirect('/chatRoom?userName=' + request.body.userName);
             }
             else {
              response.render('login', {pageMessage: "Incorrect Username or Password, please try again"});
@@ -115,6 +115,10 @@ app.post('/login', function (request, response){
         }   
         
     });
+});
+
+app.get('/createUser', function (request, response){
+    response.render('createUser', {pageMessage: ' '});
 });
 
 app.post('/createUser', function (request, response){
@@ -147,7 +151,7 @@ app.post('/createUser', function (request, response){
                         }
                         else {
                           console.log('User created')
-                          response.redirect('/chatRoom');  
+                          response.redirect('/chatRoom?userName=' + request.body.userName);  
                         }
                     });
     
@@ -164,6 +168,8 @@ app.post('/createUser', function (request, response){
 });
 
 app.get('/chatRoom', function (request, response){
+
+    var name=request.query.userName;
 
     var postHistory = [];
     var postHist = {};
@@ -188,7 +194,7 @@ app.get('/chatRoom', function (request, response){
                 });
                 
                 console.log(postHistory);
-                response.render('chatroom', {oldposts: postHistory});
+                response.render('chatroom', {oldposts: postHistory, userName: name});
             }
 
         });
@@ -204,11 +210,25 @@ var io = require('socket.io').listen(server);
 
 // Handle socket traffic
 io.sockets.on('connection', function (socket) {
+
+    //Set socket nickname
+    socket.on('nickname', function (data){
+        socket.set('userName', data.nickname);
+        console.log(data);
+    });
     
     // Relay chat data to all clients
     socket.on('chat', function(data) {
+
+        var oldpost={};
+
+        socket.get('userName', function(err, name){
+
+            var user = err ? 'Anonymous' : name;
+            oldpost= _.extend({userName: user, timeStamp: new Date().getTime()}, data);
+         
+         });
         
-        var oldpost = _.extend({userName: 'Tejal', timeStamp: new Date().getTime()}, data);
         
         db.serialize( function(){
 
@@ -229,10 +249,6 @@ io.sockets.on('connection', function (socket) {
 
         });
         
-    });
-
-    socket.on('enterRoom', function(name){
-        socket.set('userName', name);
     });
 
     socket.on('disconnect', function(){

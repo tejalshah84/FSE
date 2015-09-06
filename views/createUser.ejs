@@ -10,39 +10,39 @@
 
 	<body>
 
-		<main>
+		<div class="mainContainer">
 
 			<p class="pageMessage"><%= pageMessage %></p>
 
-			<div class="createUserBlock">	
-				<div class="logo">FSE Chat Room</div>
+			<div class="contentBlock createUserBlockHeight">	
+				<div class="registerHeader">Register</div>
 
 				<form class="createUserForm" id="createUser" action='/createUser' method="POST">
 
-					<div class="createUserFields">
+					<div class="fieldMargin">
 						<label class="createUserFieldsLabel">First Name:</label>
 						<input class="createUserFieldsInput" type="text" name="firstName" maxlength="20"/>
 					</div>
-					<div class="createUserFields">
+					<div class="fieldMargin">
 						<label class="createUserFieldsLabel">Last Name:</label>
 						<input class="createUserFieldsInput" type="text" name="lastName" maxlength="20"/>
 					</div>
-					<div class="createUserFields">
+					<div class="fieldMargin">
 						<label class="createUserFieldsLabel">Username:</label>
 						<input class="createUserFieldsInput" type="text" name="userName" maxlength="20"/>
 					</div>
-					<div class="createUserFields">
+					<div class="fieldMargin">
 						<label class="createUserFieldsLabel">Password:</label>
-						<input class="createUserFieldsInput" type="text" name="password" maxlength="20"/>
+						<input class="createUserFieldsInput" type="password" name="password" maxlength="20"/>
 					</div>
-					<div class="createUserButtonSection">
-						<input class="createUserButton" type="submit" value="Create User"/>
+					<div class="buttonSection">
+						<input " type="submit" value="Create User"/>
 					</div>
 
 				</form>
 			</div>
 
-		</main>
+		</div>
 
 	</body>
 
