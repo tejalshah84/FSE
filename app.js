@@ -4,6 +4,7 @@ var express = require('express'),
     path = require('path'),
     _ = require('underscore'),
     moment = require('moment'),
+    bcrypt = require('bcryptjs'),
     sqlite3 = require('sqlite3').verbose();
 
 //Create express instance
@@ -35,7 +36,7 @@ db.serialize(function (){
     db.run("DROP Table if EXISTS chat_history", function(err){});
 
     // Create Tables if they don't exist
-    db.run("CREATE Table if NOT EXISTS user_profile (userid INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(25) UNIQUE NOT NULL, password VARCHAR(25) NOT NULL, firstname VARCHAR(25), lastname VARCHAR(25))", function (err){
+    db.run("CREATE Table if NOT EXISTS user_profile (userid INTEGER PRIMARY KEY AUTOINCREMENT, username VARCHAR(25) UNIQUE NOT NULL, password VARCHAR(60) NOT NULL, firstname VARCHAR(25), lastname VARCHAR(25))", function (err){
 
         if(err!==null){
             console.log("Error occured while creating user_profile table");
@@ -83,6 +84,9 @@ var server = http.createServer(app).listen(app.get('port'), function(){
     console.log("Express server listening on port " + app.get('port'));
 });
 
+//Create Password Encryption Salt
+var salt = bcrypt.genSaltSync(10);
+
 //Handle webpage routing
 app.get('/', function (request, response){
     response.render('login', {pageMessage: ' '});
@@ -99,17 +103,17 @@ app.post('/login', function (request, response){
             console.log("Unable to login, please try again");
         }
         else if (row===undefined){
-            response.render('login', {pageMessage: "This Username does not exist, please use new user flow to create ID"});
+            response.render('login', {pageMessage: "Username doesn not exist"});
             console.log("User does not exist");
         }
         else {
 
-            if (row.password===request.body.password){
+            if (bcrypt.compareSync(request.body.password, row.password)){
                 console.log(row);  
                 response.redirect('/chatRoom?userName=' + request.body.userName);
             }
             else {
-             response.render('login', {pageMessage: "Incorrect Username or Password, please try again"});
+             response.render('login', {pageMessage: "Incorrect Password, please try again"});
              console.log("Incorrect credentials");
             }  
         }   
@@ -135,12 +139,14 @@ app.post('/createUser', function (request, response){
             }
             else if (row===undefined){
 
+                var hashPassword = bcrypt.hashSync(request.body.password, salt);
+
                 db.serialize( function(){
 
                     //Create New User record in DB
                     db.run("INSERT INTO user_profile VALUES($next_id, $username, $password, $firstname, $lastname)", {
                         $username: request.body.userName,
-                        $password: request.body.password,
+                        $password: hashPassword,
                         $firstname: request.body.firstName,
                         $lastname: request.body.lastName
                     }, function (err){
@@ -225,7 +231,7 @@ io.sockets.on('connection', function (socket) {
         socket.get('userName', function(err, name){
 
             var user = err ? 'Anonymous' : name;
-            oldpost= _.extend({userName: user, timeStamp: new Date().getTime()}, data);
+            oldpost= _.extend({userName: user}, data);
          
          });
         

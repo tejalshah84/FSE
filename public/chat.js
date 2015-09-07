@@ -18,6 +18,7 @@
         $('#sendMessageButton').on('click', function(){
             if($('#postMessage').val() !== ''){
                     socket.emit('chat', {
+                    timeStamp: new Date().getTime(),
                     message: $('#postMessage').val()
                 });
                 
